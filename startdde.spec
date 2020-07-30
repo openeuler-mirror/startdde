@@ -12,7 +12,6 @@ License:        GPLv3
 URL:            https://shuttle.deepin.com/cache/repos/eagle/release-candidate/RERFNS4wLjAuMzUyOA/pool/main/s/startdde/
 Source0:        %{name}_%{version}.orig.tar.xz
 
-
 BuildRequires:  golang jq
 BuildRequires:  deepin-gir-generator
 BuildRequires:  golang-github-linuxdeepin-go-dbus-factory-devel
@@ -35,14 +34,11 @@ BuildRequires:  libXfixes
 BuildRequires:  gtk3-devel
 BuildRequires:  pulseaudio-libs-devel
 BuildRequires:  libgnome-keyring-devel
-#BuildRequires:  libgnome-keyring
 BuildRequires:  alsa-lib-devel
 BuildRequires:  alsa-lib
 
 %{?systemd_requires}
 Requires:       dde-daemon
-#Requires:       deepin-wm
-#Requires:       deepin-metacity
 Requires:       libcgroup-tools
 
 %description
@@ -51,12 +47,9 @@ custom applications which compliant with xdg autostart specification.
 
 %prep
 %setup -q
-#%patch0 -p1
 
 sed -i '/polkit/s|lib|libexec|' watchdog/dde_polkit_agent.go
 sed -i '/deepin-daemon/s|lib|libexec|' utils.go session.go misc/auto_launch/*.json
-# Fix fallback session script path (RHBZ#1706281)
-#sed -i 's|/usr/sbin/lightdm-session|%{_sysconfdir}/X11/xinit/Xsession|' misc/deepin-session
 
 %build
 export GOPATH="%{gopath}"
@@ -81,7 +74,6 @@ BUILD_ID="0x$(head -c20 /dev/urandom|od -An -tx1|tr -d ' \n')"
 %{_sysconfdir}/X11/Xsession.d/00deepin-dde-env
 %{_sysconfdir}/X11/Xsession.d/01deepin-profile
 %{_bindir}/%{name}
-#%{_sbindir}/deepin-session
 %{_sbindir}/deepin-fix-xauthority-perm
 %{_datadir}/xsessions/deepin.desktop
 %{_datadir}/lightdm/lightdm.conf.d/60-deepin.conf
@@ -90,5 +82,5 @@ BUILD_ID="0x$(head -c20 /dev/urandom|od -An -tx1|tr -d ' \n')"
 /usr/lib/deepin-daemon/greeter-display-daemon
 
 %changelog
-* Fri Jun 12 2020 uoser <uoser@uniontech.com> - 5.4.0.1
-- Update to 5.4.0.1
+* Thu Jul 30 2020 openEuler Buildteam <buildteam@openeuler.org> - 5.4.0.1-1
+- Package init
