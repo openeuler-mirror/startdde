@@ -6,7 +6,7 @@
 
 Name:           startdde
 Version:        5.4.0.1
-Release:        1
+Release:        2
 Summary:        Starter of deepin desktop environment
 License:        GPLv3
 URL:            https://shuttle.deepin.com/cache/repos/eagle/release-candidate/RERFNS4wLjAuMzUyOA/pool/main/s/startdde/
@@ -73,5 +73,8 @@ BUILD_ID="0x$(head -c20 /dev/urandom|od -An -tx1|tr -d ' \n')"
 /usr/lib/deepin-daemon/greeter-display-daemon
 
 %changelog
+* Tue Aug 18 2020 chenbo pan <panchenbo@uniontech.com> - 5.4.0.1-2
+- remove golang devel
+
 * Thu Jul 30 2020 openEuler Buildteam <buildteam@openeuler.org> - 5.4.0.1-1
 - Package init
