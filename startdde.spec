@@ -6,24 +6,15 @@
 
 Name:           startdde
 Version:        5.4.0.1
-Release:        1
+Release:        2
 Summary:        Starter of deepin desktop environment
 License:        GPLv3
 URL:            https://shuttle.deepin.com/cache/repos/eagle/release-candidate/RERFNS4wLjAuMzUyOA/pool/main/s/startdde/
 Source0:        %{name}_%{version}.orig.tar.xz
 
 BuildRequires:  golang jq
-BuildRequires:  deepin-gir-generator
-BuildRequires:  golang-github-linuxdeepin-go-dbus-factory-devel
-BuildRequires:  go-lib-devel
-BuildRequires:  golang-github-linuxdeepin-go-x11-client-devel
-BuildRequires:  golang-github-davecgh-go-spew-devel
 BuildRequires:  dde-api
 BuildRequires:  dde-api-devel
-BuildRequires:  golang-golang-org-net-devel
-BuildRequires:  golang-github-cryptix-wav-devel
-BuildRequires:  golang-golang-x-xerrors-devel
-BuildRequires:  golang-github-linuxdeepin-go-x11-client-devel
 BuildRequires:  glib2-devel
 BuildRequires:  libX11
 BuildRequires:  libX11-devel
@@ -52,7 +43,7 @@ sed -i '/polkit/s|lib|libexec|' watchdog/dde_polkit_agent.go
 sed -i '/deepin-daemon/s|lib|libexec|' utils.go session.go misc/auto_launch/*.json
 
 %build
-export GOPATH="%{gopath}"
+export GOPATH=%{gopath}:%{_builddir}/%{name}-%{version}/vendor
 BUILD_ID="0x$(head -c20 /dev/urandom|od -An -tx1|tr -d ' \n')"
 %make_build GOBUILD="go build -compiler gc -ldflags \"${LDFLAGS} -B $BUILD_ID\" -a -v -x"
 
@@ -82,5 +73,8 @@ BUILD_ID="0x$(head -c20 /dev/urandom|od -An -tx1|tr -d ' \n')"
 /usr/lib/deepin-daemon/greeter-display-daemon
 
 %changelog
+* Tue Aug 18 2020 chenbo pan <panchenbo@uniontech.com> - 5.4.0.1-2
+- remove golang devel
+
 * Thu Jul 30 2020 openEuler Buildteam <buildteam@openeuler.org> - 5.4.0.1-1
 - Package init
