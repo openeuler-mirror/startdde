@@ -6,7 +6,7 @@
 
 Name:           startdde
 Version:        5.4.0.1
-Release:        3
+Release:        4
 Summary:        Starter of deepin desktop environment
 License:        GPLv3
 URL:            https://shuttle.deepin.com/cache/repos/eagle/release-candidate/RERFNS4wLjAuMzUyOA/pool/main/s/startdde/
@@ -14,7 +14,6 @@ Source0:        https://shuttle.deepin.com/cache/repos/eagle/release-candidate/R
 
 BuildRequires:  golang jq
 BuildRequires:  dde-api
-BuildRequires:  dde-api-devel
 BuildRequires:  glib2-devel
 BuildRequires:  libX11
 BuildRequires:  libX11-devel
@@ -43,9 +42,9 @@ sed -i '/polkit/s|lib|libexec|' watchdog/dde_polkit_agent.go
 sed -i '/deepin-daemon/s|lib|libexec|' utils.go session.go misc/auto_launch/*.json
 
 %build
-export GOPATH=%{gopath}:%{_builddir}/%{name}-%{version}/vendor
+export GOPATH=%{_builddir}/%{name}-%{version}/vendor
 BUILD_ID="0x$(head -c20 /dev/urandom|od -An -tx1|tr -d ' \n')"
-%make_build GOBUILD="go build -compiler gc -ldflags \"${LDFLAGS} -B $BUILD_ID\" -a -v -x"
+%make_build GOBUILD="go build -mod=vendor -compiler gc -ldflags \"${LDFLAGS} -B $BUILD_ID\" -a -v -x"
 
 %install
 %make_install
@@ -73,8 +72,11 @@ BUILD_ID="0x$(head -c20 /dev/urandom|od -An -tx1|tr -d ' \n')"
 /usr/lib/deepin-daemon/greeter-display-daemon
 
 %changelog
-* Thu Sep 3 2020 weidong <weidong@uniontech.com> - 5.4.0.1-3
+* Thu Sep 3 2020 weidong <weidong@uniontech.com> - 5.4.0.1-4
 - fix source url in spec
+
+* Wed Sep 2 2020 chenbo pan <panchenbo@uniontech.com> - 5.4.0.1-3
+- fix requires golang devel
 
 * Tue Aug 18 2020 chenbo pan <panchenbo@uniontech.com> - 5.4.0.1-2
 - remove golang devel
