@@ -6,11 +6,11 @@
 
 Name:           startdde
 Version:        5.4.0.1
-Release:        3
+Release:        4
 Summary:        Starter of deepin desktop environment
 License:        GPLv3
 URL:            https://shuttle.deepin.com/cache/repos/eagle/release-candidate/RERFNS4wLjAuMzUyOA/pool/main/s/startdde/
-Source0:        %{name}_%{version}.orig.tar.xz
+Source0:        https://shuttle.deepin.com/cache/repos/eagle/release-candidate/RERFNS4wLjAuMzUyOA/pool/main/s/${name}/%{name}_%{version}.orig.tar.xz
 
 BuildRequires:  golang jq
 BuildRequires:  dde-api
@@ -72,6 +72,9 @@ BUILD_ID="0x$(head -c20 /dev/urandom|od -An -tx1|tr -d ' \n')"
 /usr/lib/deepin-daemon/greeter-display-daemon
 
 %changelog
+* Thu Sep 3 2020 weidong <weidong@uniontech.com> - 5.4.0.1-4
+- fix source url in spec
+
 * Wed Sep 2 2020 chenbo pan <panchenbo@uniontech.com> - 5.4.0.1-3
 - fix requires golang devel
 
