@@ -1,16 +1,14 @@
-%global with_debug 1
-%global _unpackaged_files_terminate_build 0
-%if 0%{?with_debug}
+%global _missing_build_ids_terminate_build 0
 %global debug_package   %{nil}
-%endif
 
 Name:           startdde
-Version:        5.4.0.1
-Release:        4
+Version:        5.6.0.25
+Release:        1
 Summary:        Starter of deepin desktop environment
 License:        GPLv3
-URL:            https://shuttle.deepin.com/cache/repos/eagle/release-candidate/RERFNS4wLjAuMzUyOA/pool/main/s/startdde/
-Source0:        https://shuttle.deepin.com/cache/repos/eagle/release-candidate/RERFNS4wLjAuMzUyOA/pool/main/s/${name}/%{name}_%{version}.orig.tar.xz
+URL:            https://github.com/linuxdeepin/startdde
+Source0:        %{name}-%{version}.tar.xz
+Source1:        vendor.tar.gz
 
 BuildRequires:  golang jq
 BuildRequires:  dde-api
@@ -26,43 +24,49 @@ BuildRequires:  pulseaudio-libs-devel
 BuildRequires:  libgnome-keyring-devel
 BuildRequires:  alsa-lib-devel
 BuildRequires:  alsa-lib
+BuildRequires:  pkgconfig(gudev-1.0)
 
-%{?systemd_requires}
 Requires:       dde-daemon
 Requires:       libcgroup-tools
 
 %description
-Startdde is used for launching DDE components and invoking user's
-custom applications which compliant with xdg autostart specification.
+%{summary}.
 
 %prep
-%setup -q
-
-sed -i '/polkit/s|lib|libexec|' watchdog/dde_polkit_agent.go
-sed -i '/deepin-daemon/s|lib|libexec|' utils.go session.go misc/auto_launch/*.json
+%autosetup -n %{name}-%{version}
+sed -i 's|/usr/lib/deepin-daemon|/usr/libexec/deepin-daemon|g' \
+misc/auto_launch/chinese.json misc/auto_launch/default.json
+tar -xf %{SOURCE1}
 
 %build
+
+
+## Scripts in /etc/X11/Xsession.d are not executed after xorg start
+sed -i 's|X11/Xsession.d|X11/xinit/xinitrc.d|g' Makefile
 export GOPATH=%{_builddir}/%{name}-%{version}/vendor
-BUILD_ID="0x$(head -c20 /dev/urandom|od -An -tx1|tr -d ' \n')"
-%make_build GOBUILD="go build -mod=vendor -compiler gc -ldflags \"${LDFLAGS} -B $BUILD_ID\" -a -v -x"
+
+%make_build GO_BUILD_FLAGS=-trimpath
 
 %install
 %make_install
 
 %post
-%systemd_post dde-readahead.service
-
-%preun
-%systemd_preun dde-readahead.service
-
-%postun
-%systemd_postun_with_restart dde-readahead.service
+xsOptsFile=/etc/X11/Xsession.options
+update-alternatives --install /usr/bin/x-session-manager x-session-manager \
+    /usr/bin/startdde 90 || true
+if [ -f $xsOptsFile ];then
+	sed -i '/^use-ssh-agent/d' $xsOptsFile
+	if ! grep '^no-use-ssh-agent' $xsOptsFile >/dev/null; then
+		echo no-use-ssh-agent >> $xsOptsFile
+	fi
+fi
 
 %files
 %doc README.md
 %license LICENSE
-%{_sysconfdir}/X11/Xsession.d/00deepin-dde-env
-%{_sysconfdir}/X11/Xsession.d/01deepin-profile
+%{_sysconfdir}/X11/xinit/xinitrc.d/00deepin-dde-env
+%{_sysconfdir}/X11/xinit/xinitrc.d/01deepin-profile
+%{_sysconfdir}/profile.d/deepin-xdg-dir.sh
 %{_bindir}/%{name}
 %{_sbindir}/deepin-fix-xauthority-perm
 %{_datadir}/xsessions/deepin.desktop
@@ -72,6 +76,9 @@ BUILD_ID="0x$(head -c20 /dev/urandom|od -An -tx1|tr -d ' \n')"
 /usr/lib/deepin-daemon/greeter-display-daemon
 
 %changelog
+* Tue Jul 20 2021 weidong <weidong@uniontech.com> - 5.6.0.25-1
+- update to 5.6.0.25-1
+
 * Thu Sep 3 2020 weidong <weidong@uniontech.com> - 5.4.0.1-4
 - fix source url in spec
 
