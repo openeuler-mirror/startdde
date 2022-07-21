@@ -32,7 +32,6 @@ BuildRequires:  libsecret-devel
 Provides:       x-session-manager
 Requires:       dde-daemon
 Requires:       procps
-Requires:       gocode
 Requires:       deepin-desktop-schemas
 Requires:       dde-kwin
 Requires:       libXfixes
