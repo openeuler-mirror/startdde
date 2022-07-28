@@ -6,7 +6,7 @@
 
 Name:           startdde
 Version:        5.4.0.1
-Release:        4
+Release:        5
 Summary:        Starter of deepin desktop environment
 License:        GPLv3
 URL:            https://shuttle.deepin.com/cache/repos/eagle/release-candidate/RERFNS4wLjAuMzUyOA/pool/main/s/startdde/
@@ -49,14 +49,6 @@ BUILD_ID="0x$(head -c20 /dev/urandom|od -An -tx1|tr -d ' \n')"
 %install
 %make_install
 
-%post
-%systemd_post dde-readahead.service
-
-%preun
-%systemd_preun dde-readahead.service
-
-%postun
-%systemd_postun_with_restart dde-readahead.service
 
 %files
 %doc README.md
@@ -72,6 +64,9 @@ BUILD_ID="0x$(head -c20 /dev/urandom|od -An -tx1|tr -d ' \n')"
 /usr/lib/deepin-daemon/greeter-display-daemon
 
 %changelog
+* Thu Jul 28 2022 liweiganga <liweiganga@uniontech.com> - 5.4.0.1-5
+- fix: delete dde-readahead.service
+
 * Thu Sep 3 2020 weidong <weidong@uniontech.com> - 5.4.0.1-4
 - fix source url in spec
 
