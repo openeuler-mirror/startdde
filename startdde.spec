@@ -1,33 +1,43 @@
 %global _missing_build_ids_terminate_build 0
 %global debug_package   %{nil}
 
+%define specrelease 1%{?dist}
+%if 0%{?openeuler}
+%define specrelease 1
+%endif
+
 Name:           startdde
-Version:        5.6.0.25
-Release:        2
+Version:        5.8.11.3
+Release:        %{specrelease}
 Summary:        Starter of deepin desktop environment
 License:        GPLv3
 URL:            https://github.com/linuxdeepin/startdde
 Source0:        %{name}-%{version}.tar.xz
 Source1:        vendor.tar.gz
 
-BuildRequires:  golang jq
-BuildRequires:  dde-api
+BuildRequires:  golang
+BuildRequires:  jq
 BuildRequires:  glib2-devel
-BuildRequires:  libX11
-BuildRequires:  libX11-devel
+BuildRequires:  pkgconfig(x11)
 BuildRequires:  libXcursor-devel
-BuildRequires:  libXcursor
 BuildRequires:  libXfixes-devel
-BuildRequires:  libXfixes
 BuildRequires:  gtk3-devel
 BuildRequires:  pulseaudio-libs-devel
 BuildRequires:  libgnome-keyring-devel
 BuildRequires:  alsa-lib-devel
-BuildRequires:  alsa-lib
 BuildRequires:  pkgconfig(gudev-1.0)
+BuildRequires:  dde-api-devel
+BuildRequires:  libsecret-devel
 
+Provides:       x-session-manager
 Requires:       dde-daemon
-Requires:       libcgroup-tools
+Requires:       procps
+Requires:       deepin-desktop-schemas
+Requires:       dde-kwin
+Requires:       libXfixes
+Requires:       libXcursor
+Requires:       libsecret
+Recommends:     dde-qt5integration
 
 %description
 %{summary}.
@@ -36,14 +46,15 @@ Requires:       libcgroup-tools
 %autosetup -n %{name}-%{version}
 sed -i 's|/usr/lib/deepin-daemon|/usr/libexec/deepin-daemon|g' \
 misc/auto_launch/chinese.json misc/auto_launch/default.json
+
+patch Makefile < rpm/Makefile.patch
+patch main.go < rpm/main.go.patch
 tar -xf %{SOURCE1}
 
 %build
-
-
+export GOPATH=%{_builddir}/%{name}-%{version}/vendor:$GOPATH
 ## Scripts in /etc/X11/Xsession.d are not executed after xorg start
 sed -i 's|X11/Xsession.d|X11/xinit/xinitrc.d|g' Makefile
-export GOPATH=%{_builddir}/%{name}-%{version}/vendor
 
 %make_build GO_BUILD_FLAGS=-trimpath
 
@@ -73,9 +84,16 @@ fi
 %{_datadir}/lightdm/lightdm.conf.d/60-deepin.conf
 %{_datadir}/%{name}/auto_launch.json
 %{_datadir}/%{name}/memchecker.json
+%{_datadir}/%{name}/app_startup.conf
+%{_datadir}/%{name}/filter.conf
+%{_datadir}/glib-2.0/schemas/com.deepin.dde.display.gschema.xml
+%{_datadir}/glib-2.0/schemas/com.deepin.dde.startdde.gschema.xml
 /usr/lib/deepin-daemon/greeter-display-daemon
 
 %changelog
+* Tue Jul 19 2022 konglidong <konglidong@uniontech.com> - 5.8.11.3-1
+- update to 5.8.11.3
+
 * Thu Aug 26 2021 zhangkea <zhangkea@uniontech.com> - 5.6.0.25-2
 - Update vendor
 
