@@ -1,9 +1,9 @@
 %global _missing_build_ids_terminate_build 0
-%global debug_package   %{nil}
+##%global debug_package   %{nil}
 
-%define specrelease 1%{?dist}
+%define specrelease 2%{?dist}
 %if 0%{?openeuler}
-%define specrelease 1
+%define specrelease 2
 %endif
 
 Name:           startdde
@@ -91,6 +91,9 @@ fi
 /usr/lib/deepin-daemon/greeter-display-daemon
 
 %changelog
+* Wed Dec 21 2022 liweiganga <liweiganga@uniontech.com> - 5.8.11.3-2
+- enable debuginfo for fix strip
+
 * Tue Jul 19 2022 konglidong <konglidong@uniontech.com> - 5.8.11.3-1
 - update to 5.8.11.3
 
