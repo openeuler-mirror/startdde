@@ -1,9 +1,9 @@
 %global _missing_build_ids_terminate_build 0
-##%global debug_package   %{nil}
+%global debug_package %{nil}
 
-%define specrelease 2%{?dist}
+%define specrelease 3%{?dist}
 %if 0%{?openeuler}
-%define specrelease 2
+%define specrelease 3
 %endif
 
 Name:           startdde
@@ -56,7 +56,7 @@ export GOPATH=%{_builddir}/%{name}-%{version}/vendor:$GOPATH
 ## Scripts in /etc/X11/Xsession.d are not executed after xorg start
 sed -i 's|X11/Xsession.d|X11/xinit/xinitrc.d|g' Makefile
 
-%make_build GO_BUILD_FLAGS=-trimpath
+%make_build GO_BUILD_FLAGS='-trimpath -ldflags "-s"'
 
 %install
 %make_install
@@ -91,6 +91,9 @@ fi
 /usr/lib/deepin-daemon/greeter-display-daemon
 
 %changelog
+* Tue Mar 14 2023 liweiganga <liweiganga@uniontech.com> - 5.8.11.3-3
+- feat: fix strip
+
 * Wed Dec 21 2022 liweiganga <liweiganga@uniontech.com> - 5.8.11.3-2
 - enable debuginfo for fix strip
 
