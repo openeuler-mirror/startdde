@@ -3,7 +3,7 @@
 
 Name:           startdde
 Version:        5.6.0.25
-Release:        2
+Release:        3
 Summary:        Starter of deepin desktop environment
 License:        GPLv3
 URL:            https://github.com/linuxdeepin/startdde
@@ -76,6 +76,9 @@ fi
 /usr/lib/deepin-daemon/greeter-display-daemon
 
 %changelog
+* Tue Jun 6 2023 huajingyun <huajingyun@loongson.cn> - 5.6.0.25-3
+- update sys to 0.4.0 to support loong64
+
 * Thu Aug 26 2021 zhangkea <zhangkea@uniontech.com> - 5.6.0.25-2
 - Update vendor
 
