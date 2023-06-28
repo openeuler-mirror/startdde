@@ -1,9 +1,9 @@
 %global _missing_build_ids_terminate_build 0
 %global debug_package %{nil}
 
-%define specrelease 4%{?dist}
+%define specrelease 5%{?dist}
 %if 0%{?openeuler}
-%define specrelease 4
+%define specrelease 5
 %endif
 
 Name:           startdde
@@ -91,6 +91,9 @@ fi
 /usr/lib/deepin-daemon/greeter-display-daemon
 
 %changelog
+* Wed Jun 28 2023 liweigang <liweiganga@uniontech.com> - 5.8.11.3-5
+- feat: update vendor(update golang.org/x/sys)
+
 * Mon Apr 03 2023 liweiganga <liweiganga@uniontech.com> - 5.8.11.3-4
 - feat: fix pie
 
